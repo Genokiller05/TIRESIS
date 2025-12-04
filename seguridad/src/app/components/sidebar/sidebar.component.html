@@ -1,0 +1,29 @@
+<!-- Sidebar -->
+<aside class="w-20 bg-white dark:bg-gray-800 p-2 flex flex-col items-center space-y-6">
+  <div class="p-2 text-purple-600 dark:text-purple-500">
+    <span class="material-icons !text-4xl">security</span>
+  </div>
+  <nav class="flex flex-col items-center space-y-4">
+    <a title="Administración de Guardias"
+       href="#"
+       (click)="navigateTo($event, '/home')"
+       class="p-3 rounded-xl transition-colors"
+       [ngClass]="isActive('/home') ? 'bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'">
+      <span class="material-icons">shield</span>
+    </a>
+    <a title="Alertas"
+       href="#"
+       (click)="navigateTo($event, '/alertas')"
+       class="p-3 rounded-xl transition-colors"
+       [ngClass]="isActive('/alertas') ? 'bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'">
+      <span class="material-icons">notifications</span>
+    </a>
+    <a title="Registros"
+       href="#"
+       (click)="navigateTo($event, '/registros')"
+       class="p-3 rounded-xl transition-colors"
+       [ngClass]="isActive('/registros') ? 'bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'">
+      <span class="material-icons">person_add</span>
+    </a>
+  </nav>
+</aside>

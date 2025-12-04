@@ -1,0 +1,90 @@
+[
+  {
+    "idEmpleado": "00012345",
+    "nombre": "Juan Pérez López",
+    "estado": "En servicio",
+    "email": "juan.perez@segcdmx.mx",
+    "area": "Entrada principal – Edificio A",
+    "actividades": [
+      {
+        "fechaHora": "12/11/2025 19:15",
+        "tipo": "Salida de turno",
+        "descripcion": "Fin de turno"
+      },
+      {
+        "fechaHora": "12/11/2025 08:32",
+        "tipo": "Alerta generada",
+        "descripcion": "Alerta: Movimiento detectado en zona restringida"
+      },
+      {
+        "fechaHora": "12/11/2025 07:15",
+        "tipo": "Entrada de turno",
+        "descripcion": "Inicio de turno"
+      }
+    ],
+    "foto": "/uploads/photo-1764815894485-345837117.png"
+  },
+  {
+    "idEmpleado": "00054321",
+    "nombre": "Maria García Hernández",
+    "estado": "Fuera de servicio",
+    "email": "maria.garcia@segcdmx.mx",
+    "area": "Vigilancia perimetral – Sector Norte",
+    "actividades": [
+      {
+        "fechaHora": "11/11/2025 19:10",
+        "tipo": "Entrada de turno",
+        "descripcion": "Inicio de turno"
+      },
+      {
+        "fechaHora": "12/11/2025 07:05",
+        "tipo": "Salida de turno",
+        "descripcion": "Fin de turno"
+      }
+    ]
+  },
+  {
+    "idEmpleado": "00098765",
+    "nombre": "Carlos Sánchez Rodríguez",
+    "estado": "En servicio",
+    "email": "carlos.sanchez@segcdmx.mx",
+    "area": "Control de acceso – Estacionamiento",
+    "actividades": []
+  },
+  {
+    "nombre": "Yael Rodríguez Rangel",
+    "email": "yael123@segcdmx.mx",
+    "idEmpleado": "64138025",
+    "area": "Entrada principal",
+    "foto": "/assets/images/guards/photo-1763787938309-4706443.png",
+    "estado": "Fuera de servicio",
+    "actividades": []
+  },
+  {
+    "nombre": "Ricardo López",
+    "email": "ricardo123@segcdmx.mx",
+    "idEmpleado": "85602139",
+    "area": "Edificio E",
+    "foto": "/uploads/photo-1764815748865-730870502.png",
+    "estado": "Fuera de servicio",
+    "actividades": []
+  },
+  {
+    "nombre": "Kevin Vargas",
+    "email": "kevin123@segcdmx.mx",
+    "idEmpleado": "45260189",
+    "area": "Edificio A",
+    "foto": "/assets/images/guards/photo-1764214029293-569194979.png",
+    "estado": "Fuera de servicio",
+    "actividades": []
+  },
+  {
+    "idEmpleado": "85595233",
+    "nombre": "Jorge Gutierrez",
+    "email": "jorge123@segcdmx.mx",
+    "area": "Edificio A",
+    "foto": "/assets/images/guards/photo-1764540345535-321072179.png",
+    "estado": "Fuera de servicio",
+    "actividades": []
+  }
+]
