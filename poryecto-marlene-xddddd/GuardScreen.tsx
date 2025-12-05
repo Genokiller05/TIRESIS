@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { WebView } from 'react-native-webview';
 import {
   View,
   Text,
@@ -9,7 +10,8 @@ import {
   ScrollView,
   Pressable,
   useWindowDimensions,
-  Platform,
+  Platform, // <-- Añadido
+  Image,      // <-- Añadido
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from './theme/ThemeContext';
@@ -244,7 +246,71 @@ const GuardScreen = () => {
             <Text style={[styles.modalTitle, dynamicStyles.modalTitle]}>
               {selectedCamera?.name} {t('general.preview')}
             </Text>
-            <Text style={styles.modalCameraIcon}>📹</Text>
+            {selectedCameraId === 1 ? (
+              Platform.OS === 'web' ? (
+                <Image
+                  source={{ uri: 'http://192.168.1.67:8080/video' }}
+                  style={{ width: '100%', height: '100%', resizeMode: 'contain' }}
+                />
+              ) : (
+                <WebView
+                  originWhitelist={['*']}
+                  mixedContentMode="always"
+                  androidLayerType="software"
+                  source={{ uri: 'http://192.168.1.67:8080' }} // <-- CAMBIO: Apunta a la raíz, no a /video
+                />
+              )
+            ) : selectedCameraId === 2 ? (
+              Platform.OS === 'web' ? (
+                <Image
+                  source={{ uri: 'http://TU_IP_CAMARA_2:8080/video' }}
+                  style={{ width: '100%', height: '100%', resizeMode: 'contain' }}
+                />
+              ) : (
+                <WebView
+                  originWhitelist={['*']}
+                  mixedContentMode="always"
+                  source={{
+                    html: `<body style="margin:0;padding:0;background-color:black;"><img src="http://TU_IP_CAMARA_2:8080/video" style="width:100%;height:100%;object-fit:contain;"/></body>`,
+                  }}
+                  style={{ flex: 1, width: '100%', backgroundColor: 'black' }}
+                />
+              )
+            ) : selectedCameraId === 3 ? (
+              Platform.OS === 'web' ? (
+                <Image
+                  source={{ uri: 'http://TU_IP_CAMARA_3:8080/video' }}
+                  style={{ width: '100%', height: '100%', resizeMode: 'contain' }}
+                />
+              ) : (
+                <WebView
+                  originWhitelist={['*']}
+                  mixedContentMode="always"
+                  source={{
+                    html: `<body style="margin:0;padding:0;background-color:black;"><img src="http://TU_IP_CAMARA_3:8080/video" style="width:100%;height:100%;object-fit:contain;"/></body>`,
+                  }}
+                  style={{ flex: 1, width: '100%', backgroundColor: 'black' }}
+                />
+              )
+            ) : selectedCameraId === 4 ? (
+              Platform.OS === 'web' ? (
+                <Image
+                  source={{ uri: 'http://TU_IP_CAMARA_4:8080/video' }}
+                  style={{ width: '100%', height: '100%', resizeMode: 'contain' }}
+                />
+              ) : (
+                <WebView
+                  originWhitelist={['*']}
+                  mixedContentMode="always"
+                  source={{
+                    html: `<body style="margin:0;padding:0;background-color:black;"><img src="http://TU_IP_CAMARA_4:8080/video" style="width:100%;height:100%;object-fit:contain;"/></body>`,
+                  }}
+                  style={{ flex: 1, width: '100%', backgroundColor: 'black' }}
+                />
+              )
+            ) : (
+              <Text style={styles.modalCameraIcon}>📹</Text>
+            )}
           </View>
         </View>
       </Modal>
