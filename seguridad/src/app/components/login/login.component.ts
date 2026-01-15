@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslationService } from '../../services/translation.service';
+import { SupabaseService } from '../../services/supabase.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -16,10 +17,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   email = '';
   password = '';
   errorMessage = '';
-  loginAttempts = 3;
   isLocked = false;
-  countdown = 60;
-  private timer: any;
+  countdown = 0;
 
   public uiText: any = {};
   private langSubscription!: Subscription;
@@ -27,6 +26,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private translationService: TranslationService,
+    private supabaseService: SupabaseService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -40,52 +40,57 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (this.langSubscription) {
       this.langSubscription.unsubscribe();
     }
-    if (this.timer) {
-      clearInterval(this.timer);
-    }
   }
 
-  login() {
-    if (this.isLocked) {
+  async login() {
+    // Acceso manual para el administrador solicitado
+    if (this.email === 'admin12345@tiresis.mx' && this.password === 'cisco123') {
+      if (isPlatformBrowser(this.platformId)) {
+        localStorage.setItem('adminEmail', this.email);
+      }
+
+      // Intentar autenticación real en segundo plano para obtener token de sesión (necesario para RLS)
+      try {
+        const { data, error } = await this.supabaseService.client.auth.signInWithPassword({
+          email: this.email,
+          password: this.password,
+        });
+
+        if (error) {
+          // Si falla (probablemente usuario no existe), intentamos registrarlo para obtener sesión
+          console.log('Login falló, intentando registro automático...', error.message);
+          const { data: signUpData, error: signUpError } = await this.supabaseService.client.auth.signUp({
+            email: this.email,
+            password: this.password,
+          });
+          
+          if (signUpError) {
+             console.error('Error en auto-registro:', signUpError.message);
+          } else {
+             console.log('Usuario registrado y logueado automáticamente.');
+          }
+        }
+      } catch (e) {
+        console.error('Error intentando obtener sesión de Supabase:', e);
+      }
+
+      this.router.navigate(['/home']);
       return;
     }
 
-    let storedPassword = 'cisco123'; // Default password
-    if (isPlatformBrowser(this.platformId)) {
-      const savedPassword = localStorage.getItem('adminPassword');
-      if (savedPassword) {
-        storedPassword = savedPassword;
-      }
-    }
+    try {
+      const { error } = await this.supabaseService.client.auth.signInWithPassword({
+        email: this.email,
+        password: this.password,
+      });
 
-    if (this.email === 'diego123@gmail.com' && this.password === storedPassword) {
-      if (isPlatformBrowser(this.platformId)) {
-        localStorage.setItem('adminEmail', this.email);
-        const loginTime = new Date().toISOString();
-        localStorage.setItem('lastLoginDate', loginTime);
+      if (error) {
+        this.errorMessage = error.message;
+      } else {
+        this.router.navigate(['/home']);
       }
-      this.router.navigate(['/home']);
-    } else {
-      this.loginAttempts--;
-      this.errorMessage = this.uiText.deniedMessage;
-      if (this.loginAttempts === 0) {
-        this.isLocked = true;
-        this.errorMessage = this.uiText.lockedMessage;
-        this.startTimer();
-      }
+    } catch (error) {
+      this.errorMessage = 'An unexpected error occurred.';
     }
-  }
-
-  startTimer() {
-    this.timer = setInterval(() => {
-      this.countdown--;
-      if (this.countdown === 0) {
-        clearInterval(this.timer);
-        this.isLocked = false;
-        this.loginAttempts = 3;
-        this.countdown = 60;
-        this.errorMessage = '';
-      }
-    }, 1000);
   }
 }

@@ -249,7 +249,7 @@ const GuardScreen = () => {
             {selectedCameraId === 1 ? (
               Platform.OS === 'web' ? (
                 <Image
-                  source={{ uri: 'http://192.168.1.67:8080/video' }}
+                  source={{ uri: 'http://192.168.137.124:8080/video' }}
                   style={{ width: '100%', height: '100%', resizeMode: 'contain' }}
                 />
               ) : (
@@ -257,7 +257,7 @@ const GuardScreen = () => {
                   originWhitelist={['*']}
                   mixedContentMode="always"
                   androidLayerType="software"
-                  source={{ uri: 'http://192.168.1.67:8080' }} // <-- CAMBIO: Apunta a la raíz, no a /video
+                  source={{ uri: 'http://192.168.137.124:8080' }} // <-- CAMBIO: Apunta a la raíz, no a /video
                 />
               )
             ) : selectedCameraId === 2 ? (

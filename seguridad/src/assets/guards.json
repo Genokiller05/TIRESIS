@@ -41,7 +41,8 @@
         "tipo": "Salida de turno",
         "descripcion": "Fin de turno"
       }
-    ]
+    ],
+    "foto": "/uploads/photo-1768328033115-138739819.png"
   },
   {
     "idEmpleado": "00098765",
@@ -65,7 +66,7 @@
     "email": "ricardo123@segcdmx.mx",
     "idEmpleado": "85602139",
     "area": "Edificio E",
-    "foto": "/uploads/photo-1764815748865-730870502.png",
+    "foto": "/uploads/photo-1768412391569-853488609.png",
     "estado": "Fuera de servicio",
     "actividades": []
   },

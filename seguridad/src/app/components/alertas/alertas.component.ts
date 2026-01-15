@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { ThemeService } from '../../services/theme.service';
 import { TranslationService } from '../../services/translation.service';
+import { SupabaseService } from '../../services/supabase.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -16,43 +17,7 @@ import { Subscription } from 'rxjs';
 })
 export class AlertasComponent implements OnInit, OnDestroy {
 
-  private readonly allAlerts: any[] = [
-    { 
-      fechaHora: "2025-11-21T14:30", origen: "IA", tipo: "Movimiento detectado", sitioArea: "Perímetro Oeste", estado: "Pendiente", menuVisible: false,
-      detalles: {
-        descripcion: "Se detectó una figura humana corriendo cerca de la valla perimetral.",
-        camara: { numero: 4, ip: "192.168.1.104", id: "CAM-PER-04" }
-      }
-    },
-    { 
-      fechaHora: "2025-11-21T12:05", origen: "Guardia", tipo: "Botón de pánico", sitioArea: "Planta Norte – Entrada", estado: "En proceso", menuVisible: false,
-      detalles: {
-        nombreGuardia: "Carlos Ramirez", idGuardia: "78901234",
-        descripcion: "Se activó el botón de pánico debido a un intento de acceso forzado en la puerta principal."
-      }
-    },
-    { 
-      fechaHora: "2025-11-20T23:00", origen: "IA", tipo: "Intrusión", sitioArea: "Bodega B - Acceso Principal", estado: "Completado", menuVisible: false,
-      detalles: {
-        descripcion: "Múltiples sensores de movimiento activados en secuencia. Se detectaron dos individuos.",
-        camara: { numero: 2, ip: "192.168.1.102", id: "CAM-BOD-02" }
-      }
-    },
-    { 
-      fechaHora: "2025-11-20T18:45", origen: "IA", tipo: "Cámara desconectada", sitioArea: "Torre 3 - Nivel 2", estado: "Cancelado", menuVisible: false,
-      detalles: {
-        descripcion: "La cámara CAM-T3-N2 ha perdido la conexión. Última imagen recibida a las 18:44.",
-        camara: { numero: 3, ip: "192.168.1.103", id: "CAM-T3-N2" }
-      }
-    },
-    { 
-      fechaHora: "2025-11-19T16:10", origen: "Guardia", tipo: "Acceso no autorizado", sitioArea: "Laboratorio Central", estado: "Completado", menuVisible: false,
-      detalles: {
-        nombreGuardia: "Ana Torres", idGuardia: "12345678",
-        descripcion: "Una persona sin la acreditación adecuada intentó acceder al laboratorio. Se le denegó el paso y se le escoltó fuera de las instalaciones."
-      }
-    }
-  ];
+  public allAlerts: any[] = [];
 
   // Public properties for data binding
   public displayedAlerts: any[] = [];
@@ -88,17 +53,32 @@ export class AlertasComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router, 
     private themeService: ThemeService,
-    private translationService: TranslationService
+    private translationService: TranslationService,
+    private supabaseService: SupabaseService
   ) {}
 
-  ngOnInit(): void {
-    this.aplicarFiltros();
+  async ngOnInit(): Promise<void> {
+    await this.fetchReports();
     this.themeSubscription = this.themeService.currentTheme.subscribe(theme => {
       this.currentTheme = theme;
     });
     this.langSubscription = this.translationService.uiText.subscribe(translations => {
       this.uiText = translations.alertas || {};
     });
+  }
+
+  async fetchReports() {
+    const { data, error } = await this.supabaseService.client
+      .from('reports')
+      .select('*');
+
+    if (error) {
+      console.error('Error fetching reports:', error);
+      // Handle error appropriately, maybe show a message to the user
+    } else {
+      this.allAlerts = data.map(report => ({ ...report, menuVisible: false }));
+      this.aplicarFiltros();
+    }
   }
 
   ngOnDestroy(): void {
@@ -163,10 +143,19 @@ export class AlertasComponent implements OnInit, OnDestroy {
     this.selectedStatus = '';
   }
 
-  public confirmStatusChange(): void {
+  public async confirmStatusChange(): Promise<void> {
     if (this.alertToModify && this.selectedStatus) {
-      this.alertToModify.estado = this.selectedStatus;
-      this.aplicarFiltros(); // Re-apply filters to update view if sorting/filtering is affected
+      const { data, error } = await this.supabaseService.client
+        .from('reports')
+        .update({ estado: this.selectedStatus })
+        .eq('id', this.alertToModify.id);
+
+      if (error) {
+        console.error('Error updating status:', error);
+      } else {
+        this.alertToModify.estado = this.selectedStatus;
+        this.aplicarFiltros(); // Re-apply filters to update view if sorting/filtering is affected
+      }
     }
     this.hideStatusModal();
   }
@@ -189,17 +178,26 @@ export class AlertasComponent implements OnInit, OnDestroy {
     alerta.menuVisible = false;
   }
 
-  public confirmDelete(): void {
+  public async confirmDelete(): Promise<void> {
     if (!this.alertToDelete) return;
 
-    // Eliminar de la lista principal
-    const indexAll = this.allAlerts.findIndex(a => a === this.alertToDelete);
-    if (indexAll > -1) {
-      this.allAlerts.splice(indexAll, 1);
+    const { error } = await this.supabaseService.client
+      .from('reports')
+      .delete()
+      .eq('id', this.alertToDelete.id);
+
+    if (error) {
+      console.error('Error deleting report:', error);
+    } else {
+      // Eliminar de la lista principal
+      const indexAll = this.allAlerts.findIndex(a => a.id === this.alertToDelete.id);
+      if (indexAll > -1) {
+        this.allAlerts.splice(indexAll, 1);
+      }
+      
+      // Volver a aplicar filtros para actualizar la vista
+      this.aplicarFiltros();
     }
-    
-    // Volver a aplicar filtros para actualizar la vista
-    this.aplicarFiltros();
     
     this.hideDeleteModal();
   }
