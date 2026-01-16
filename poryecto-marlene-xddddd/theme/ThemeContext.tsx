@@ -19,28 +19,28 @@ interface AppTheme {
   };
 }
 
-// Define los colores específicos para el tema claro.
+// Define los colores específicos para el tema claro (Professional Calm).
 const lightColors = {
-  background: "#f3f4f6", // Un gris muy claro para el fondo
-  card: "#ffffff",       // Blanco puro para las tarjetas o paneles
-  text: "#111827",       // Casi negro para el texto principal
-  subtext: "#6b7280",    // Gris para texto secundario o descriptivo
-  accent: "#2563eb",     // Azul vibrante para elementos interactivos
-  danger: "#dc2626",     // Rojo para acciones destructivas o alertas
-  border: "#e5e7eb",     // Gris claro para bordes y separadores
-  inputBackground: "#f9fafb", // Un blanco ligeramente grisáceo para fondos de input
+  background: "#f8fafc", // Cool gray background
+  card: "#ffffff",       // Pure white
+  text: "#0f172a",       // Slate 900
+  subtext: "#64748b",    // Slate 500
+  accent: "#d97706",     // Amber 600 (Darker Gold for light mode)
+  danger: "#ef4444",     // Red 500
+  border: "#e2e8f0",     // Slate 200
+  inputBackground: "#ffffff",
 };
 
-// Define los colores específicos para el tema oscuro.
+// Define los colores específicos para el tema oscuro (Blue & Gold - Royal Premium).
 const darkColors = {
-  background: "#020617", // Azul muy oscuro, casi negro, para el fondo
-  card: "#0f172a",       // Azul oscuro para las tarjetas
-  text: "#f9fafb",       // Blanco con un toque de gris para el texto
-  subtext: "#9ca3af",    // Gris más claro para texto secundario
-  accent: "#3b82f6",     // Un azul más brillante que resalta en la oscuridad
-  danger: "#ef4444",     // Un rojo más brillante para ser visible en fondos oscuros
-  border: "#1f2937",     // Un borde sutil de color azul-gris oscuro
-  inputBackground: "#020617", // Mismo color que el fondo para inputs integrados
+  background: "#0f172a", // Slate 900 (Deep Blue/Black base)
+  card: "#172554",       // Blue 950 (Rich Blue for cards)
+  text: "#f8fafc",       // Slate 50
+  subtext: "#94a3b8",    // Slate 400
+  accent: "#fbbf24",     // Amber 400 (Bright Gold)
+  danger: "#f87171",     // Red 400
+  border: "#1e3a8a",     // Blue 900 (Subtle blue border)
+  inputBackground: "#1e293b", // Slate 800
 };
 
 
@@ -104,7 +104,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
       console.error("Error al guardar el tema en AsyncStorage:", error);
     }
   };
-  
+
   // Seleccionamos el set de colores correcto basado en el estado isDarkMode.
   const theme = {
     isDarkMode,

@@ -5,16 +5,17 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Text, StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider, useTheme } from './theme/ThemeContext';
+import { Ionicons } from '@expo/vector-icons';
 
 // Importación de pantallas
 import LoginScreen from './LoginScreen';
 import GuardScreen from './GuardScreen';
-import AlertsScreen from './AlertsScreen';
 import ReportsScreen from './ReportsScreen';
 import HomeScreen from './HomeScreen';
 import ProfileScreen from './ProfileScreen';
 import SettingsScreen from './SettingsScreen';
 import NewReportScreen from './NewReportScreen';
+import RegistrationScreen from './RegistrationScreen';
 
 // --- Tipos para el Stack Navigator principal ---
 export type RootStackParamList = {
@@ -23,13 +24,13 @@ export type RootStackParamList = {
   ProfileScreen: undefined;
   SettingsScreen: undefined;
   NewReportScreen: undefined;
+  RegistrationScreen: { type: 'visit' | 'delivery' | 'worker' };
 };
 
 // --- Tipos para el Bottom Tab Navigator (MainTabs) ---
 export type TabParamList = {
   Home: undefined;
   GuardCameras: undefined;
-  AlertsDashboard: undefined;
   Reports: undefined;
 };
 
@@ -60,21 +61,17 @@ const MainTabs = () => {
       }}
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{
-          title: t('home.guard_button'),
-          tabBarIcon: ({ color, size }) => (<Text style={{ color, fontSize: size }}>🏠</Text>),
-        }} />
+        title: t('home.guard_button'),
+        tabBarIcon: ({ color, size }) => (<Ionicons name="home-outline" size={size} color={color} />),
+      }} />
       <Tab.Screen name="GuardCameras" component={GuardScreen} options={{
-          title: t('general.view_camera'),
-          tabBarIcon: ({ color, size }) => (<Text style={{ color, fontSize: size }}>📹</Text>),
-        }} />
-      <Tab.Screen name="AlertsDashboard" component={AlertsScreen} options={{
-          title: t('alerts.dashboard_title'),
-          tabBarIcon: ({ color, size }) => (<Text style={{ color, fontSize: size }}>🚨</Text>),
-        }} />
+        title: t('general.view_camera'),
+        tabBarIcon: ({ color, size }) => (<Ionicons name="videocam-outline" size={size} color={color} />),
+      }} />
       <Tab.Screen name="Reports" component={ReportsScreen} options={{
-          title: t('reports.management_title'),
-          tabBarIcon: ({ color, size }) => (<Text style={{ color, fontSize: size }}>📊</Text>),
-        }} />
+        title: t('reports.management_title'),
+        tabBarIcon: ({ color, size }) => (<Ionicons name="stats-chart-outline" size={size} color={color} />),
+      }} />
     </Tab.Navigator>
   );
 };
@@ -111,6 +108,7 @@ const AppNavigator = () => {
         <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
         <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
         <Stack.Screen name="NewReportScreen" component={NewReportScreen} />
+        <Stack.Screen name="RegistrationScreen" component={RegistrationScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
