@@ -17,6 +17,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { useTheme } from './theme/ThemeContext';
 import { useI18n } from './theme/I18nContext';
 
+import { addReport } from './services/dataService';
+
 // --- Tipado de navegación ---
 type RootStackParamList = {
   MainTabs: { screen: 'Reports' };
@@ -73,7 +75,31 @@ const NewReportScreen = () => {
   };
 
   const handleSubmitReport = () => {
-    Alert.alert(t('new_report.sent_simulation'), 'Funcionalidad pendiente.');
+    if (!incidentType || !description) {
+      Alert.alert(t('new_report.error_title'), t('new_report.error_message'));
+      return;
+    }
+
+    const newReport = {
+      type: incidentType,
+      date: new Date().toLocaleString(),
+      status: 'Enviado' as const,
+      summary: description,
+      evidence: evidence || undefined,
+    };
+
+    addReport(newReport);
+
+    Alert.alert(
+      t('new_report.success_title'),
+      t('new_report.success_message'),
+      [
+        {
+          text: 'OK',
+          onPress: () => navigation.navigate('MainTabs', { screen: 'Reports' }),
+        },
+      ]
+    );
   };
 
   const evidenceSelectedText = evidence

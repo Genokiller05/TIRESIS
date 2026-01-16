@@ -16,6 +16,7 @@ import ProfileScreen from './ProfileScreen';
 import SettingsScreen from './SettingsScreen';
 import NewReportScreen from './NewReportScreen';
 import RegistrationScreen from './RegistrationScreen';
+import ReportDetailScreen from './ReportDetailScreen';
 
 // --- Tipos para el Stack Navigator principal ---
 export type RootStackParamList = {
@@ -25,6 +26,7 @@ export type RootStackParamList = {
   SettingsScreen: undefined;
   NewReportScreen: undefined;
   RegistrationScreen: { type: 'visit' | 'delivery' | 'worker' };
+  ReportDetail: { reportId: number };
 };
 
 // --- Tipos para el Bottom Tab Navigator (MainTabs) ---
@@ -109,6 +111,7 @@ const AppNavigator = () => {
         <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
         <Stack.Screen name="NewReportScreen" component={NewReportScreen} />
         <Stack.Screen name="RegistrationScreen" component={RegistrationScreen} />
+        <Stack.Screen name="ReportDetail" component={ReportDetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

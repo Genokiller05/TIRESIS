@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   StyleSheet,
   View,
@@ -8,67 +8,36 @@ import {
   Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useTheme } from './theme/ThemeContext';
 import { useI18n } from './theme/I18nContext';
+import { getAllReports, Report as ReportData } from './services/dataService'; 
 
 // --- Tipado para la pila de navegación ---
 type RootStackParamList = {
   NewReportScreen: undefined;
   MainTabs: undefined;
+  ReportDetail: { reportId: number };
 };
 
 type ReportsScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  'MainTabs'
+  RootStackParamList
 >;
-
-// --- Tipos de datos para los reportes ---
-interface ReportData {
-  id: number;
-  type: string;
-  date: string;
-  status: 'Enviado' | 'En Revisión' | 'Resuelto';
-  summary: string;
-}
 
 const ReportsScreen = () => {
   const navigation = useNavigation<ReportsScreenNavigationProp>();
   const { colors } = useTheme();
   const { t } = useI18n();
   const styles = createStyles(colors);
+  const [reports, setReports] = useState<ReportData[]>([]);
 
-  const dummyReports: ReportData[] = [
-    {
-      id: 1,
-      type: 'Intrusión detectada',
-      date: '2025-11-24 10:30',
-      status: 'Resuelto',
-      summary: 'Acceso no autorizado en Almacén B, se notificó a seguridad.',
-    },
-    {
-      id: 2,
-      type: 'Fallo de equipo',
-      date: '2025-11-23 15:12',
-      status: 'En Revisión',
-      summary: 'La cámara CAM-04 del pasillo norte ha perdido la conexión.',
-    },
-    {
-      id: 3,
-      type: 'Actividad sospechosa',
-      date: '2025-11-23 08:45',
-      status: 'Enviado',
-      summary: 'Vehículo desconocido sin placas fue visto rondando el perímetro norte.',
-    },
-    {
-      id: 4,
-      type: 'Vandalismo',
-      date: '2025-11-22 23:50',
-      status: 'Resuelto',
-      summary: 'Graffiti encontrado en la pared exterior del Edificio C.',
-    },
-  ];
+  useFocusEffect(
+    useCallback(() => {
+      const allReports = getAllReports();
+      setReports(allReports.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()));
+    }, [])
+  );
 
   const statusColors: Record<ReportData['status'], string> = {
     Enviado: colors.accent,
@@ -83,7 +52,7 @@ const ReportsScreen = () => {
   };
 
   const renderReportItem = ({ item }: { item: ReportData }) => (
-    <Pressable style={styles.reportCard}>
+    <Pressable style={styles.reportCard} onPress={() => navigation.navigate('ReportDetail', { reportId: item.id })}>
       <View style={styles.reportIconContainer}>
         <Text style={styles.reportIcon}>📋</Text>
       </View>
@@ -107,7 +76,7 @@ const ReportsScreen = () => {
         <Text style={styles.mainTitle}>{t('reports.management_title')}</Text>
         <View style={styles.panel}>
           <FlatList
-            data={dummyReports}
+            data={reports}
             renderItem={renderReportItem}
             keyExtractor={item => item.id.toString()}
             contentContainerStyle={styles.listContent}

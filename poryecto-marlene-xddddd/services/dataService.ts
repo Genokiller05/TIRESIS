@@ -6,6 +6,7 @@ export interface Report {
   status: 'Enviado' | 'En Revisión' | 'Resuelto';
   summary: string;
   timestamp: string;
+  evidence?: string;
 }
 
 export interface User {
